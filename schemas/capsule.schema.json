@@ -1,0 +1,136 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "structural-telemetry/capsule.schema.json",
+  "title": "StructuralFactCapsule",
+  "description": "Structural Telemetry paper v1.1 §4 / §10.3. Minimal-sufficiency: most fields optional; emit at the declared tier.",
+  "type": "object",
+  "required": ["capsule_id", "value_ref", "object_kind", "carrier_space"],
+  "additionalProperties": false,
+  "properties": {
+    "capsule_id": { "type": "string", "minLength": 1 },
+    "value_ref": {
+      "type": "string",
+      "description": "Pointer to the value (path, hash, db row) — the capsule records identity, not the payload"
+    },
+    "object_kind": {
+      "type": "string",
+      "description": "e.g. scalar | vector | covector | multivector | operator | matrix_representation | linear_map | bilinear_form | state_transition | jacobian | covariance | graph_laplacian | probability_distribution"
+    },
+    "carrier_space": { "type": "string", "description": "e.g. Cl(3,1)^16, R^{200x200}, V -> V" },
+    "domain": { "type": "string" },
+    "codomain": { "type": "string" },
+    "shape": { "type": "string" },
+    "units": { "type": "string" },
+    "frame": {
+      "type": "object",
+      "description": "§4.3 — includes the index map; two capsules sharing a frame share its index map. Open to extra keys (the paper's Appendix B example uses basis/layout); the named keys below are the §4.3 normative struct.",
+      "additionalProperties": true,
+      "properties": {
+        "basis_id": { "type": "string" },
+        "signature": { "type": "string" },
+        "orientation": { "type": "string" },
+        "coordinate_chart": { "type": "string" },
+        "row_semantics": {},
+        "column_semantics": {},
+        "index_map": {},
+        "version": { "type": "string" }
+      }
+    },
+    "algebra": { "type": "string", "description": "e.g. Cl(3,1)" },
+    "grade_signature": {
+      "type": "object",
+      "description": "§4.4 — norm_type is load-bearing in indefinite signatures",
+      "additionalProperties": false,
+      "dependentRequired": { "grade_norms": ["norm_type"] },
+      "properties": {
+        "algebra": { "type": "string" },
+        "active_grades": { "type": "array", "items": { "type": "integer", "minimum": 0 } },
+        "norm_type": { "enum": ["euclidean_coefficient", "invariant_form", "declared_other"] },
+        "grade_norms": { "type": "object", "additionalProperties": { "type": "number" } },
+        "grade_energy_fraction": { "type": "object", "additionalProperties": { "type": "number" } },
+        "forbidden_grades": { "type": "array", "items": { "type": "integer", "minimum": 0 } },
+        "subalgebra_constraint": { "type": "string" }
+      }
+    },
+    "spectral_signature": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "eigenvalues": {},
+        "singular_values": {},
+        "eigenspaces": {},
+        "invariant_subspaces": {},
+        "spectral_gaps": {},
+        "condition_numbers": {},
+        "normality": {},
+        "diagonalizability": {},
+        "Jordan_or_Schur_summary": {},
+        "reference_frame": { "type": "string" },
+        "pairing_rule": { "type": "string", "description": "§6.6 — required whenever eigenvalue drift will be computed against this signature" }
+      }
+    },
+    "phase_signature": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "phase_reference": { "type": "string" },
+        "wrapping_convention": { "type": "string" },
+        "unwrapping_rule": { "type": "string" },
+        "gauge_or_origin": { "type": "string" },
+        "relative_phase_channels": {},
+        "coherence_summary": {},
+        "phase_slip_events": {}
+      }
+    },
+    "information_signature": {
+      "type": "object",
+      "description": "§4.7 — no entropy without a declared random variable",
+      "additionalProperties": true,
+      "required": ["random_variable", "estimator"],
+      "properties": {
+        "random_variable": { "type": "string" },
+        "sample_space": {},
+        "distribution_reference": {},
+        "estimator": { "type": "string" },
+        "binning_or_density_method": { "type": "string" },
+        "smoothing_policy": { "type": "string" },
+        "support_policy": { "type": "string" },
+        "log_base": { "type": "number", "exclusiveMinimum": 0 },
+        "units": { "enum": ["bits", "nats"] },
+        "finite_sample_warning": { "type": "string" }
+      }
+    },
+    "law_profile": {
+      "type": "object",
+      "description": "§4.8 — epistemic law statuses",
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": true,
+        "required": ["status"],
+        "properties": {
+          "status": { "enum": ["proven_true", "proven_false", "assumed", "tested_true", "tested_false", "unknown", "not_applicable"] },
+          "tolerance": { "type": "number" },
+          "valid_under": { "type": "string" },
+          "evidence": { "enum": ["theorem", "validator", "numerical_test", "user_declaration"] },
+          "scope": { "enum": ["class", "object", "object_pair", "operation"] }
+        }
+      }
+    },
+    "non_assumptions": {
+      "type": "array",
+      "description": "§3.2 — laws explicitly NOT assumed; absent from both law_profile and here means unknown, never implicitly assumed",
+      "items": { "type": "string" }
+    },
+    "provenance": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "run_id": { "type": "string" },
+        "step_index": { "type": "integer" },
+        "checkpoint": { "type": "string" },
+        "layer": {},
+        "created_at": { "type": "string" }
+      }
+    }
+  }
+}

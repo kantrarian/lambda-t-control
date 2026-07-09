@@ -1,0 +1,92 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "structural-telemetry/operation_record.schema.json",
+  "title": "OperationRecord",
+  "description": "Structural Telemetry paper v1.1 §5 / §10.5. Defects normalize into separate DefectRecords keyed by operation_id (not inlined here). QuotientRecords (§3.5) are OperationRecords whose operation is a declared quotient.",
+  "type": "object",
+  "required": ["operation_id", "operation_name", "input_capsules", "output_capsules"],
+  "additionalProperties": false,
+  "properties": {
+    "operation_id": { "type": "string", "minLength": 1 },
+    "operation_name": { "type": "string", "minLength": 1 },
+    "run_id": { "type": "string" },
+    "step_index": {
+      "type": "integer",
+      "description": "logical time (training step / token index / simulation step), not wall clock"
+    },
+    "input_capsules": { "type": "array", "items": { "type": "string" }, "minItems": 0 },
+    "output_capsules": { "type": "array", "items": { "type": "string" }, "minItems": 0 },
+    "preconditions": { "type": "array", "items": { "type": "string" } },
+    "laws_used": { "type": "array", "items": { "type": "string" } },
+    "laws_tested": { "type": "array", "items": { "type": "string" } },
+    "defects_measured": {
+      "type": "array",
+      "description": "defect_ids of DefectRecords emitted by this operation (the records themselves live in defects.jsonl)",
+      "items": { "type": "string" }
+    },
+    "grade_change": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "input_grades": { "type": "array", "items": { "type": "integer" } },
+        "output_grades": { "type": "array", "items": { "type": "integer" } }
+      }
+    },
+    "spectral_change": { "type": "object", "additionalProperties": true },
+    "frame_change": { "type": "object", "additionalProperties": true },
+    "phase_change": { "type": "object", "additionalProperties": true },
+    "information_change": {
+      "type": "object",
+      "description": "estimator-bound metrics; must carry the declaration",
+      "additionalProperties": true,
+      "required": ["random_variable", "estimator"],
+      "properties": {
+        "random_variable": { "type": "string" },
+        "sample_space": {},
+        "estimator": { "type": "string" },
+        "log_base": { "type": "number" },
+        "units": { "enum": ["bits", "nats"] },
+        "entropy_before": { "type": "number" },
+        "entropy_after": { "type": "number" },
+        "support_lost": {},
+        "validity_conditions": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "information_lost": {
+      "type": "object",
+      "description": "denormalized summary; per-component authority is the loss record (§10.12 precedence)",
+      "additionalProperties": true,
+      "properties": {
+        "lost_components": {},
+        "lost_grades": { "type": "array", "items": { "type": "integer" } },
+        "loss_fraction": { "type": "number", "minimum": 0, "maximum": 1 },
+        "preserved_components": {}
+      }
+    },
+    "side_channels": {
+      "type": "object",
+      "description": "retained quantities that make repair = side_channel actionable (e.g. pre-normalization magnitude); a repair path not persisted is not a repair path",
+      "additionalProperties": true
+    },
+    "claim_effects": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": true,
+        "required": ["claim_type", "effect"],
+        "properties": {
+          "claim_type": { "type": "string" },
+          "requires": { "type": "array", "items": { "type": "string" } },
+          "effect": { "enum": ["preserve", "invalidate", "restrict", "repair"] },
+          "invalidated_requirements": { "type": "array", "items": { "type": "string" } },
+          "repair": { "enum": ["side_channel", "remap", "recompute", "impossible"] },
+          "severity": { "enum": ["observe", "warn", "invalidate", "reject", "quarantine"] },
+          "downstream_warning": { "type": "string" }
+        }
+      }
+    },
+    "severity": { "enum": ["observe", "warn", "invalidate", "reject", "quarantine"] },
+    "validation_status": { "type": "string" },
+    "downstream_warning": { "type": "string" }
+  }
+}

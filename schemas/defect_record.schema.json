@@ -1,0 +1,44 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "structural-telemetry/defect_record.schema.json",
+  "title": "DefectRecord",
+  "description": "Structural Telemetry paper v1.1 §6.1 / §10.8. measured_zero ≠ undefined_by_type ≠ skipped ≠ ill_conditioned. DimensionEvents (§6.9) are DefectRecords with defect_type = dimension_mismatch and before/after index maps in payload.",
+  "type": "object",
+  "required": ["defect_id", "defect_type", "defect_status", "object_ids"],
+  "additionalProperties": false,
+  "dependentRequired": {
+    "normalized_value": ["norm_type", "normalizer"]
+  },
+  "properties": {
+    "defect_id": { "type": "string", "minLength": 1 },
+    "operation_id": { "type": "string" },
+    "run_id": { "type": "string" },
+    "step_index": { "type": "integer" },
+    "defect_type": {
+      "type": "string",
+      "description": "e.g. noncommutativity | nonassociativity | grade_leakage | projection_loss | rotor_norm_defect | spectral_drift | eigenframe_drift | phase_drift | phase_slip | support_loss | dimension_mismatch | frame_mismatch"
+    },
+    "defect_status": {
+      "enum": ["measured_zero", "measured_nonzero", "undefined_by_type", "skipped", "ill_conditioned"]
+    },
+    "object_ids": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
+    "raw_value": { "type": ["number", "null"] },
+    "norm_type": { "type": "string", "description": "e.g. frobenius | euclidean_coefficient | invariant_form | spectral" },
+    "normalizer": { "type": "string", "description": "denominator convention, e.g. norm(A)*norm(B)+eps; record eps explicitly" },
+    "eps": { "type": "number", "description": "regularizer used in the normalizer, if any" },
+    "normalized_value": { "type": ["number", "null"] },
+    "tolerance": { "type": "number" },
+    "precision": { "type": "string", "description": "e.g. float32, float64" },
+    "units": { "type": "string" },
+    "pairing_rule": { "type": "string", "description": "required for eigenvalue-drift defects (§6.6)" },
+    "aggregation": { "type": "string", "description": "required when a vector quantity (e.g. principal angles) is reported as a scalar; default max" },
+    "conditioning_warning": { "type": "string" },
+    "payload": { "type": "object", "additionalProperties": true }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "defect_status": { "enum": ["measured_zero", "measured_nonzero"] } } },
+      "then": { "required": ["raw_value", "norm_type"] }
+    }
+  ]
+}
