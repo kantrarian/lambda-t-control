@@ -39,19 +39,23 @@ recorded in the results JSON for any future stochastic extension.
 | SC4 telemetry schema validation | gated | 211 capsules + 12 operations + 195 defects, 0 errors — **PASS** |
 | SC5 solver convergence | reported | max \|Δ ln P\| tight-vs-loose tolerance = 5.8e-7 |
 
-**The factor-of-two finding (do not skip this).** The paper's Eq. (1)
-writes the LZ probability as exp(−πΩ²/ν); the standard Landau–Zener result
-for this Hamiltonian is exp(−πΩ²/(2ν)) (Zener 1932). The paper's Eq. (5),
-P ≈ exp(−πΩ³/2Λ(t*)), **is** algebraically consistent with its own Eq. (1)
-via Lemma 1 (ν = 2Λ/Ω), but the standard result maps to
-**exp(−πΩ³/4Λ(t*))**. The TDSE data decide it: regressing −ln P_sim on
-πΩ²/(2ν*) gives slope b = 1.003 (pooled; 1.000 / 1.000 / 1.010 per
-schedule), i.e. the data follow the standard 4Λ constant; the printed 2Λ
-form overstates suppression by a factor 2 in the exponent (deviation
-reaches 8 in ln P at the slowest sweeps). Both forms are overlaid in
-Fig. 1(c). Section 5 of the recompiled PDF states this plainly; the
-theory sections (Eqs. 1, 5, 9–11) were **left as printed** pending the
-author's decision on propagating the constant.
+**The factor-of-two finding — CORRECTED in v2 (2026-07-09).** The paper's
+original Eq. (1) wrote the LZ probability as exp(−πΩ²/ν); the standard
+Landau–Zener result for this Hamiltonian is exp(−πΩ²/(2ν)) (Zener 1932).
+The original Eq. (5), P ≈ exp(−πΩ³/2Λ(t*)), **was** algebraically
+consistent with its own Eq. (1) via Lemma 1 (ν = 2Λ/Ω), but the standard
+result maps to **exp(−πΩ³/4Λ(t*))**. The TDSE data decided it: regressing
+−ln P_sim on πΩ²/(2ν*) gives slope b = 1.003 (pooled; 1.000 / 1.000 /
+1.010 per schedule) — the data follow the standard 4Λ constant; the
+originally printed 2Λ form overstated suppression by a factor 2 in the
+exponent (deviation reaches 8 in ln P at the slowest sweeps). Both forms
+are overlaid in Fig. 1(c). **With the inventor's approval (2026-07-09),
+the correction is propagated through the theory sections in this repo's
+tex and PDF** (Eqs. 1, 5, 9–11 now carry the standard constant; the two
+spectral lower bounds tighten from 2π²Ω² to π²Ω² in the numerator
+accordingly), with a dated revision footnote and Section 5 documenting
+the provenance. Lemma 1 and the pointwise control law were never
+affected.
 
 **Pointwise-law confirmation.** The Gaussian-flattened schedule is 4×
 steeper than its crossing slope everywhere except near t*, yet its leakage

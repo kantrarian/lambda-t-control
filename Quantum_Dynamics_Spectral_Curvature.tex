@@ -14,7 +14,7 @@ $\Lambda(t)$}
 \author{R. J. Mathews\\
 Independent Researcher\\
 \texttt{rjmathews@getqore.ai}}
-\date{}
+\date{November 2025 --- revised July 2026 (v2: simulation section added; Landau--Zener exponent normalization corrected)}
 
 \begin{document}
 \maketitle
@@ -26,9 +26,9 @@ Non-adiabatic transitions remain a dominant source of leakage and decoherence in
 \]
 At the gap minimum $t^*$, the Landau--Zener transition probability satisfies
 \[
-    P_{LZ} \approx \exp\left(-\frac{\pi\Omega^3}{2\Lambda(t^*)}\right),
+    P_{LZ} \approx \exp\left(-\frac{\pi\Omega^3}{4\Lambda(t^*)}\right),
 \]
-establishing a direct, pointwise control law: minimizing peak curvature at the avoided crossing exponentially suppresses leakage. This is complemented by a frequency-domain analysis showing that peak curvature is bounded by the spectral first moment $\int |\omega| |\hat{\Delta}(\omega)|\, d\omega$, providing a rigorous low-pass design rule. We present a predictive feedback loop that enforces $\Lambda(t) \le \alpha_{\mathrm{crit}}$ during gate operation. Time-dependent Schr\"odinger simulations of LZSM sweeps (90 runs across linear, tanh, and Gaussian-flattened detuning schedules) confirm the pointwise law: measured leakage collapses onto a single function of the peak curvature $\Lambda(t^*)$, with the numerically determined exponent constant $\exp(-\pi\Omega^{3}/4\Lambda(t^*))$ --- the standard Landau--Zener normalization; see the factor-of-two discussion in Section~5 --- and a curvature-flattened waveform reduces measured leakage by factors of $8$ to $5.7\times 10^{3}$ relative to a naive linear ramp at equal sweep range and equal total time, without requiring counter-diabatic fields or full Hamiltonian inversion. This work provides a simple geometric precursor for non-adiabatic transitions and a practical control strategy compatible with existing pulse-generation hardware.
+establishing a direct, pointwise control law: minimizing peak curvature at the avoided crossing exponentially suppresses leakage. This is complemented by a frequency-domain analysis showing that peak curvature is bounded by the spectral first moment $\int |\omega| |\hat{\Delta}(\omega)|\, d\omega$, providing a rigorous low-pass design rule. We present a predictive feedback loop that enforces $\Lambda(t) \le \alpha_{\mathrm{crit}}$ during gate operation. Time-dependent Schr\"odinger simulations of LZSM sweeps (90 runs across linear, tanh, and Gaussian-flattened detuning schedules) confirm the pointwise law: measured leakage collapses onto a single function of the peak curvature $\Lambda(t^*)$, matching the displayed exponent constant with fitted slope $1.003$, and a curvature-flattened waveform reduces measured leakage by factors of $8$ to $5.7\times 10^{3}$ relative to a naive linear ramp at equal sweep range and equal total time, without requiring counter-diabatic fields or full Hamiltonian inversion. This work provides a simple geometric precursor for non-adiabatic transitions and a practical control strategy compatible with existing pulse-generation hardware.
 \end{abstract}
 
 %=============================================================================
@@ -37,10 +37,10 @@ establishing a direct, pointwise control law: minimizing peak curvature at the a
 
 Electrically controlled qubits, particularly semiconductor spin qubits, frequently rely on avoided crossings to implement state transfer or phase accumulation. Leakage during these crossings is typically modeled by the Landau--Zener (LZ) formula, producing a transition probability
 \begin{equation}
-    P_{LZ} \approx \exp\left(-\frac{\pi\Omega^2}{\nu}\right),
+    P_{LZ} \approx \exp\left(-\frac{\pi\Omega^2}{2\nu}\right),
     \label{eq:lz-standard}
 \end{equation}
-where $\Omega$ is the transverse coupling and $\nu = |\dot{\Delta}(t^*)|$ is the detuning sweep rate at the minimum gap. Existing control approaches measure leakage only after it has occurred, requiring repeated calibration or counter-diabatic corrections.
+where $\Omega$ is the transverse coupling and $\nu = |\dot{\Delta}(t^*)|$ is the detuning sweep rate at the minimum gap.\footnote{\textit{Revision note (July 2026):} earlier drafts of this paper printed Eq.~\eqref{eq:lz-standard} --- and consequently Eqs.~\eqref{eq:lz-curvature} and \eqref{eq:lz-combined}--\eqref{eq:bandlimit-lower} --- without the factor of two in the exponent's denominator, overstating the leakage suppression by a factor of two in the exponent. The time-dependent Schr\"odinger simulations of Section~5 identified the discrepancy (fitted exponent slope $1.003$ against the standard normalization), and this revision propagates the standard Landau--Zener constant throughout. Lemma~1 and the pointwise control law are unaffected.} Existing control approaches measure leakage only after it has occurred, requiring repeated calibration or counter-diabatic corrections.
 
 We propose a predictive control parameter: the \emph{spectral curvature functional} $\Lambda(t)$. This observable produces a precursor signal for imminent leakage and yields a direct control objective: constrain $\Lambda$ near the avoided crossing to suppress $P_{LZ}$ in real time.
 
@@ -93,7 +93,7 @@ Let $t^*$ denote the minimum gap, i.e.\ $\Delta(t^*) \approx 0$. From Eq.~\eqref
 \begin{lemma}
 The Landau--Zener transition probability is expressible directly in terms of the curvature at the gap minimum:
 \begin{equation}
-    P_{LZ} \approx \exp\left(-\frac{\pi\Omega^3}{2\Lambda(t^*)}\right).
+    P_{LZ} \approx \exp\left(-\frac{\pi\Omega^3}{4\Lambda(t^*)}\right).
     \label{eq:lz-curvature}
 \end{equation}
 \end{lemma}
@@ -156,18 +156,18 @@ Apply Theorem~1.
 
 Let $\nu^* \equiv |\dot{\Delta}(t^*)|$ be the local sweep rate at the gap minimum. The Landau--Zener formula~\cite{landau1932,zener1932,stueckelberg1932,majorana1932} gives
 \begin{equation}
-    P_{LZ} \approx \exp\left(-\frac{\pi\Omega^2}{\nu^*}\right) = \exp\left(-\frac{\pi\Omega^3}{2\Lambda(t^*)}\right).
+    P_{LZ} \approx \exp\left(-\frac{\pi\Omega^2}{2\nu^*}\right) = \exp\left(-\frac{\pi\Omega^3}{4\Lambda(t^*)}\right).
     \label{eq:lz-combined}
 \end{equation}
 Combining~\eqref{eq:lz-combined} with~\eqref{eq:curvature-bound} yields the \emph{spectral lower bound}
 \begin{equation}
-    P_{LZ} \ge \exp\left(-\frac{\pi\Omega^{3}/2}{\frac{\Omega}{4\pi}\int |\omega| |\hat{\Delta}(\omega)|\, d\omega}\right) = \exp\left(-\frac{2\pi^2\Omega^2}{\int_{-\infty}^{\infty} |\omega| |\hat{\Delta}(\omega)|\, d\omega}\right).
+    P_{LZ} \ge \exp\left(-\frac{\pi\Omega^{3}/4}{\frac{\Omega}{4\pi}\int |\omega| |\hat{\Delta}(\omega)|\, d\omega}\right) = \exp\left(-\frac{\pi^2\Omega^2}{\int_{-\infty}^{\infty} |\omega| |\hat{\Delta}(\omega)|\, d\omega}\right).
     \label{eq:spectral-lower-bound}
 \end{equation}
 
 In particular, for a fixed spectral moment $\int |\omega| |\hat{\Delta}|$, no control schedule can drive $P_{LZ}$ below the right-hand side of~\eqref{eq:spectral-lower-bound}. Under the bandlimit of Corollary~1 we also obtain
 \begin{equation}
-    P_{LZ} \ge \exp\left(-\frac{2\pi^2\Omega^2}{\omega_c \|\hat{\Delta}\|_{L^1}}\right).
+    P_{LZ} \ge \exp\left(-\frac{\pi^2\Omega^2}{\omega_c \|\hat{\Delta}\|_{L^1}}\right).
     \label{eq:bandlimit-lower}
 \end{equation}
 
@@ -223,14 +223,14 @@ We note that a practical, real-time implementation of this loop faces significan
 
 \textbf{Protocol.} We integrate the time-dependent Schr\"odinger equation $i\dot{\psi} = B(t)\psi$ for the generator of Eq.~\eqref{eq:hamiltonian} (Dormand--Prince DOP853, relative tolerance $10^{-11}$, absolute tolerance $10^{-13}$; unitarity preserved to $\bigl|\,\|\psi\|-1\,\bigr| < 2\times10^{-9}$ in every run, and halving the tolerances changes $\ln P_{LZ}$ by at most $6\times10^{-7}$). Three detuning schedules cross $\Delta = 0$ at $t^*$, each parametrized by its crossing slope $\nu^* = |\dot{\Delta}(t^*)|$: a \emph{linear} ramp $\Delta = \nu^* t$; a \emph{tanh} ramp $\Delta = \Delta_0\tanh(t/\tau)$, $\tau = \Delta_0/\nu^*$, whose curvature peaks at the crossing; and a \emph{Gaussian-flattened} ramp $\dot{\Delta}(t) = A\,[1 - a\,e^{-t^2/2\sigma^2}]$ with $a = \tfrac34$, which is locally slow at the crossing ($\dot{\Delta}(t^*) = \nu^*$) but four times steeper everywhere else. Each run starts in the adiabatic ground state at $\Delta = -\Delta_0$ (with $\Delta_0 = 30\,\Omega$) and reports the leakage $P_{LZ}$ as the final excited-adiabatic-state population; the sweep covers $\Omega \in \{0.5, 1, 2\}$ and ten crossing slopes per schedule, spanning $P_{LZ} \in [3.4\times10^{-4},\, 0.82]$ (90 runs). Along every schedule, $\Lambda(t)$ is computed both numerically---as the operator norm $\|[B, \dot{B}]\|$ with $\dot{B}$ from a fourth-order finite difference---and analytically via Lemma~1; the two agree to a relative error below $4\times10^{-9}$ at all grid points of all 90 runs, verifying Eq.~\eqref{eq:curvature-identity} end to end (Fig.~\ref{fig:curvature-sweeps}b).
 
-\textbf{Results.} The measured leakage collapses onto a single function of the peak curvature (Fig.~\ref{fig:curvature-sweeps}c): with the standard Landau--Zener exponent $P_{LZ} = \exp(-\pi\Omega^3/4\Lambda(t^*))$, the maximum residual $|\ln P_{\mathrm{sim}} - \ln P_{\mathrm{pred}}|$ over all runs with $P > 10^{-6}$ is $6\times10^{-4}$ (linear), $2.2\times10^{-3}$ (tanh), and $0.084$ (Gaussian-flattened, whose flattening window spans only $\approx 6$ LZ jump times and thereby probes the locality limit of the pointwise formula). The Gaussian-flattened schedule is globally four times steeper than its crossing slope, yet its leakage is set by $\Lambda(t^*)$ alone---direct confirmation that the control-relevant quantity is the \emph{pointwise} peak curvature, not a global property of the waveform. One caveat the simulations force on Section~2: regressing $-\ln P_{\mathrm{sim}}$ on $\pi\Omega^2/2\nu^*$ yields slope $b = 1.003$ (per schedule: $1.000$, $1.000$, $1.010$), i.e.\ the data follow $\exp(-\pi\Omega^3/4\Lambda(t^*))$, whereas the constant printed in Eq.~\eqref{eq:lz-curvature}---equivalently the exponent $-\pi\Omega^2/\nu$ of Eq.~\eqref{eq:lz-standard}---corresponds to $b = 2$ and overstates the suppression by a factor of two in the exponent (dashed curve in Fig.~\ref{fig:curvature-sweeps}c; the deviation reaches $8$ in $\ln P$ at the slowest sweeps). The pointwise control law is unaffected---$P_{LZ}$ remains a monotone exponential in $-1/\Lambda(t^*)$, and Lemma~1 is exact---but quantitative pulse budgets should use $P_{LZ} = \exp(-\pi\Omega^3/4\Lambda(t^*))$, and Eqs.~\eqref{eq:lz-standard}, \eqref{eq:lz-curvature} and \eqref{eq:lz-combined}--\eqref{eq:bandlimit-lower} should be read with the standard normalization $P_{LZ} = \exp(-\pi\Omega^2/2\nu^*)$.
+\textbf{Results.} The measured leakage collapses onto a single function of the peak curvature (Fig.~\ref{fig:curvature-sweeps}c): with the standard Landau--Zener exponent $P_{LZ} = \exp(-\pi\Omega^3/4\Lambda(t^*))$, the maximum residual $|\ln P_{\mathrm{sim}} - \ln P_{\mathrm{pred}}|$ over all runs with $P > 10^{-6}$ is $6\times10^{-4}$ (linear), $2.2\times10^{-3}$ (tanh), and $0.084$ (Gaussian-flattened, whose flattening window spans only $\approx 6$ LZ jump times and thereby probes the locality limit of the pointwise formula). The Gaussian-flattened schedule is globally four times steeper than its crossing slope, yet its leakage is set by $\Lambda(t^*)$ alone---direct confirmation that the control-relevant quantity is the \emph{pointwise} peak curvature, not a global property of the waveform. The simulations also serve as an end-to-end audit of the exponent normalization: regressing $-\ln P_{\mathrm{sim}}$ on $\pi\Omega^2/2\nu^*$ yields slope $b = 1.003$ (per schedule: $1.000$, $1.000$, $1.010$), confirming the standard Landau--Zener constant now printed in Eqs.~\eqref{eq:lz-standard} and \eqref{eq:lz-curvature}. Earlier drafts of this paper printed those equations with the exponent a factor of two larger ($b = 2$ on this regression, deviating by up to $8$ in $\ln P$ at the slowest sweeps; dashed curve in Fig.~\ref{fig:curvature-sweeps}c). The simulations identified that error and this revision corrects it throughout; Lemma~1 is exact and the pointwise control law is unaffected---$P_{LZ}$ remains a monotone exponential in $-1/\Lambda(t^*)$---but quantitative pulse budgets change by the corrected constant.
 
 \textbf{Curvature-constrained versus naive ramps.} Finally, we compare waveforms at \emph{equal sweep range and equal total time}---the operationally fair comparison for a fixed gate budget. Replacing the linear ramp by a curvature-flattened waveform ($a = 0.85$, $\sigma = 0.1\,T$), the measured leakage drops by a factor of $8.0$ at $\Omega T = 19.1$, $5.7\times10^{3}$ at $\Omega T = 38.2$, and $3.5\times10^{2}$ at $\Omega T = 76.4$: substantial suppression from slope reshaping alone, with no counter-diabatic field and no Hamiltonian inversion, exactly as the control objective $\Lambda(t) \le \alpha_{\mathrm{crit}}$ near $t^*$ prescribes. (For these strongly flattened pulses the flattening window is comparable to the LZ jump time, so the pointwise formula is no longer quantitative there---the measured reductions straddle its point estimates---but the design rule's direction and its exponential character survive.) Simulation code, the numerical protocol's structural-telemetry sidecars, and all sweep numbers accompany this manuscript (\texttt{sim/lzsm\_sweeps.py}, \texttt{results/lzsm\_sweeps.json}).
 
 \begin{figure}[t]
 \centering
 \includegraphics[width=\textwidth]{figures/fig_curvature_sweeps.pdf}
-\caption{Curvature sweeps. (a)~The three detuning schedules (representative runs, $\Omega = 1$). (b)~Curvature profiles $\Lambda(t)/\Lambda(t^*)$: lines are the Lemma~1 identity $\tfrac12\Omega|\dot\Delta|$; markers are the independent finite-difference evaluation of $\|[B,\dot B]\|$ (agreement $<4\times10^{-9}$ relative). (c)~Measured leakage versus normalized peak curvature for all 90 runs (3 schedules $\times$ 3 values of $\Omega$ $\times$ 10 ramp rates; markers are nested by size because the three schedules land on the same points, and the three $\Omega$ branches coincide to $<10^{-12}$ relative---the exact scale invariance underlying the $\Lambda(t^*)/\Omega^3$ collapse). The solid curve is the standard-LZ form $\exp(-\pi\Omega^3/4\Lambda(t^*))$, which the data follow; the dashed curve is Eq.~\eqref{eq:lz-curvature} as printed, $\exp(-\pi\Omega^3/2\Lambda(t^*))$, shown for comparison (see the factor-of-two discussion in the text).}
+\caption{Curvature sweeps. (a)~The three detuning schedules (representative runs, $\Omega = 1$). (b)~Curvature profiles $\Lambda(t)/\Lambda(t^*)$: lines are the Lemma~1 identity $\tfrac12\Omega|\dot\Delta|$; markers are the independent finite-difference evaluation of $\|[B,\dot B]\|$ (agreement $<4\times10^{-9}$ relative). (c)~Measured leakage versus normalized peak curvature for all 90 runs (3 schedules $\times$ 3 values of $\Omega$ $\times$ 10 ramp rates; markers are nested by size because the three schedules land on the same points, and the three $\Omega$ branches coincide to $<10^{-12}$ relative---the exact scale invariance underlying the $\Lambda(t^*)/\Omega^3$ collapse). The solid curve is Eq.~\eqref{eq:lz-curvature}, $\exp(-\pi\Omega^3/4\Lambda(t^*))$, which the data follow; the dashed curve is the constant printed in earlier drafts, $\exp(-\pi\Omega^3/2\Lambda(t^*))$, retained for comparison (corrected in this revision).}
 \label{fig:curvature-sweeps}
 \end{figure}
 
